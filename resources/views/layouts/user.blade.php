@@ -12,10 +12,11 @@
         <aside class="w-64 bg-white shadow-lg flex flex-col justify-between">
             <div>
                 <div class="p-6 flex items-center space-x-2">
-                    <div class="h-8 w-8 bg-indigo-200 rounded-full flex items-center justify-center">
-                        <span class="font-bold text-indigo-600">P</span>
+                    <div class="flex flex-col items-center w-full">
+                        <div class="h-20 w-20 flex items-center justify-center">
+                            <img src="{{ asset('assets/logo/zoom-logo.svg') }}" alt="Logo" class="h-20 w-20 object-contain" />
+                        </div>
                     </div>
-                    <span class="font-bold text-lg text-indigo-700">Policy Digest</span>
                 </div>
                 <nav class="mt-8">
                     <a href="{{ route('user.dashboard') }}" class="sidebar-link flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100{{ request()->routeIs('user.dashboard') ? ' active' : '' }}">
@@ -36,6 +37,10 @@
                 </nav>
             </div>
 
+            <!-- Sidebar Bottom Branding -->
+            <div class="mb-6 flex flex-col items-center">
+                <span class="font-bold text-base text-indigo-700 tracking-wide">Policy Digest</span>
+            </div>
         </aside>
         <!-- Main Content -->
         <div class="flex-1 flex flex-col">
