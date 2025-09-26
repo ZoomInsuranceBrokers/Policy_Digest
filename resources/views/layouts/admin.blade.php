@@ -32,6 +32,9 @@
                     <a href="{{ route('admin.portfolio') }}" class="sidebar-link flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100{{ request()->routeIs('admin.portfolio') ? ' active' : '' }}">
                         <span class="material-icons mr-3">account_balance_wallet</span> Portfolio
                     </a>
+                    <a href="{{ route('admin.claims') }}" class="sidebar-link flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100{{ request()->routeIs('admin.claims') ? ' active' : '' }}">
+                        <span class="material-icons mr-3">assignment</span> Claims
+                    </a>
                     <a href="{{ route('admin.users') }}" class="sidebar-link flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100{{ request()->routeIs('admin.users') ? ' active' : '' }}">
                         <span class="material-icons mr-3">group</span> Users
                     </a>

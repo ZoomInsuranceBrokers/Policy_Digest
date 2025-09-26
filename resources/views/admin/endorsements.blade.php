@@ -19,10 +19,6 @@
                 <span id="selected-files" class="ml-2 text-xs text-gray-700"></span>
             </div>
         </div>
-        <div class="flex-1">
-            <label class="block font-semibold mb-1">Remark (optional, applies to all)</label>
-            <input type="text" name="remark" class="w-full border rounded px-3 py-2">
-        </div>
         <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">Upload</button>
     </form>
     <script>
@@ -45,7 +41,7 @@
             <thead>
                 <tr class="bg-gray-100 text-gray-700">
                     <th class="px-4 py-2">Document</th>
-                    <th class="px-4 py-2">Remark</th>
+                    <th class="px-4 py-2">File Name</th>
                     <th class="px-4 py-2">Uploaded At</th>
                     <th class="px-4 py-2">Actions</th>
                 </tr>
@@ -57,8 +53,8 @@
                         <a href="{{ asset('storage/' . $endorsement->document) }}" target="_blank" class="text-indigo-600 underline">View</a>
                     </td>
                     <td class="px-4 py-2">
-                        <span id="remark-text-{{ $endorsement->id }}">{{ $endorsement->remark }}</span>
-                        <form action="{{ route('admin.portfolio.update_endorsement', $endorsement->id) }}" method="POST" class="hidden inline-block" id="remark-form-{{ $endorsement->id }}">
+                        <span id="filename-text-{{ $endorsement->id }}" class="text-gray-800">{{ $endorsement->remark }}</span>
+                        <form action="{{ route('admin.portfolio.update_endorsement', $endorsement->id) }}" method="POST" class="hidden inline-block" id="filename-form-{{ $endorsement->id }}">
                             @csrf
                             @method('PUT')
                             <input type="text" name="remark" value="{{ $endorsement->remark }}" class="border rounded px-2 py-1 text-xs">
@@ -68,7 +64,7 @@
                     </td>
                     <td class="px-4 py-2">{{ $endorsement->created_at->format('Y-m-d H:i') }}</td>
                     <td class="px-4 py-2 flex gap-2">
-                        <button onclick="editRemark({{ $endorsement->id }})" class="bg-yellow-400 text-white px-2 py-1 rounded text-xs hover:bg-yellow-500">Edit</button>
+                        <button onclick="editFilename({{ $endorsement->id }})" class="bg-yellow-400 text-white px-2 py-1 rounded text-xs hover:bg-yellow-500">Edit Name</button>
                         <form action="{{ route('admin.portfolio.delete_endorsement', $endorsement->id) }}" method="POST" onsubmit="return confirm('Delete this endorsement copy?')">
                             @csrf
                             @method('DELETE')
@@ -78,13 +74,13 @@
                 </tr>
                 @endforeach
     <script>
-        function editRemark(id) {
-            document.getElementById('remark-text-' + id).style.display = 'none';
-            document.getElementById('remark-form-' + id).style.display = 'inline-block';
+        function editFilename(id) {
+            document.getElementById('filename-text-' + id).style.display = 'none';
+            document.getElementById('filename-form-' + id).style.display = 'inline-block';
         }
         function cancelEdit(id) {
-            document.getElementById('remark-form-' + id).style.display = 'none';
-            document.getElementById('remark-text-' + id).style.display = '';
+            document.getElementById('filename-form-' + id).style.display = 'none';
+            document.getElementById('filename-text-' + id).style.display = '';
         }
     </script>
             </tbody>

@@ -15,6 +15,10 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::middleware(['auth', 'admin'])->group(function () {
+    // Admin Claims Section
+    Route::get('/admin/claims', [\App\Http\Controllers\Admin\ClaimsController::class, 'index'])->name('admin.claims');
+    Route::get('/admin/claims/company/{company}', [\App\Http\Controllers\Admin\ClaimsController::class, 'companyClaims'])->name('admin.claims.company');
+    Route::get('/admin/claims/company/{company}/export', [\App\Http\Controllers\Admin\ClaimsController::class, 'export'])->name('admin.claims.company.export');
     Route::post('/admin/portfolio/ajax-bulk-row/{companyId}', [\App\Http\Controllers\PortfolioController::class, 'ajaxBulkRow'])->name('admin.portfolio.ajax_bulk_row');
     Route::put('/admin/portfolio/endorsement/{endorsementId}', [\App\Http\Controllers\PortfolioController::class, 'updateEndorsement'])->name('admin.portfolio.update_endorsement');
     Route::delete('/admin/portfolio/endorsement/{endorsementId}', [\App\Http\Controllers\PortfolioController::class, 'deleteEndorsement'])->name('admin.portfolio.delete_endorsement');
@@ -42,5 +46,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
 Route::middleware(['auth', 'user'])->prefix('user')->group(function () {
     Route::get('/dashboard', function() { return view('user.dashboard'); })->name('user.dashboard');
     Route::get('/portfolio', [PortfolioController::class, 'userPortfolio'])->name('user.portfolio');
-    Route::get('/claims', function() { return view('user.claims'); })->name('user.claims');
+    Route::get('/portfolio/policy/{policyId}/endorsements', [PortfolioController::class, 'userViewEndorsements'])->name('user.portfolio.endorsements');
+    Route::get('/claims', [PortfolioController::class, 'userClaims'])->name('user.claims');
+    Route::get('/claims/create/{type?}', [PortfolioController::class, 'createClaim'])->name('user.claims.create');
+    Route::post('/claims/store', [PortfolioController::class, 'storeClaim'])->name('user.claims.store');
 });

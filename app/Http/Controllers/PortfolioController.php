@@ -6,6 +6,7 @@ use App\Models\CompanyMaster;
 use App\Models\PolicyPortfolio;
 use Illuminate\Http\Request;
 use App\Models\EndorsementCopy;
+use App\Models\Claims;
 
 class PortfolioController extends Controller
 {
@@ -22,6 +23,113 @@ class PortfolioController extends Controller
             $endorsements = EndorsementCopy::whereIn('policy_portfolio_id', $policies->pluck('id'))->get();
         }
         return view('user.portfolio', compact('policies', 'endorsements'));
+    }
+
+    public function userViewEndorsements($policyId)
+    {
+        $user = auth()->user();
+        $policy = PolicyPortfolio::where('id', $policyId)
+                                ->where('company_id', $user->company_id)
+                                ->firstOrFail();
+        $endorsements = EndorsementCopy::where('policy_portfolio_id', $policyId)->get();
+        return view('user.endorsements', compact('policy', 'endorsements'));
+    }
+
+    public function userClaims()
+    {
+        $user = auth()->user();
+        $companyId = $user->company_id;
+
+        $claims = [];
+        $policies = [];
+        if ($companyId) {
+            $claims = Claims::where('company_id', $companyId)
+                           ->with(['policyPortfolio'])
+                           ->orderBy('created_at', 'desc')
+                           ->get();
+            $policies = PolicyPortfolio::where('company_id', $companyId)->get();
+        }
+        return view('user.claims', compact('claims', 'policies'));
+    }
+
+    public function createClaim($type = 'regular')
+    {
+        $user = auth()->user();
+        $companyId = $user->company_id;
+
+        $policies = [];
+        $selectedPolicy = null;
+        if ($companyId) {
+            $policies = PolicyPortfolio::where('company_id', $companyId)->get();
+            $policyId = request('policy_id');
+            if ($policyId) {
+                $selectedPolicy = PolicyPortfolio::with('company')->where('company_id', $companyId)->where('id', $policyId)->first();
+            }
+        }
+
+        $isMarine = ($type === 'marine') ? 1 : 0;
+        return view('user.create_claim', compact('policies', 'isMarine', 'type', 'selectedPolicy'));
+    }
+
+    public function storeClaim(Request $request)
+    {
+        $user = auth()->user();
+
+        $validationRules = [
+            'policy_portfolio_id' => 'nullable|exists:policy_portfolio,id',
+            'is_marine' => 'required|boolean',
+            'policy_number' => 'nullable|string|max:255',
+            'policy_period' => 'nullable|string|max:255',
+            'estimated_loss_amount' => 'nullable|numeric|min:0',
+            'date_of_loss' => 'nullable|date',
+        ];
+
+        // Add specific validation rules based on claim type
+        if ($request->is_marine == 1) {
+            // Marine claims validation
+            $validationRules = array_merge($validationRules, [
+                'name_of_insured' => 'nullable|string|max:255',
+                'consignor_name_address' => 'nullable|string',
+                'consignee_name_address' => 'nullable|string',
+                'invoice_no' => 'nullable|string|max:255',
+                'invoice_date' => 'nullable|date',
+                'invoice_value' => 'nullable|numeric|min:0',
+                'lr_gr_airway_bl_no' => 'nullable|string|max:255',
+                'lr_gr_airway_bl_date' => 'nullable|date',
+                'transporter_name' => 'nullable|string|max:255',
+                'driver_name' => 'nullable|string|max:255',
+                'driver_phone' => 'nullable|string|max:20',
+                'vehicle_container_no' => 'nullable|string|max:255',
+                'consignment_received_date' => 'nullable|date',
+                'place_of_loss' => 'nullable|string|max:255',
+                'nature_of_loss' => 'nullable|string|max:255',
+                'survey_address' => 'nullable|string',
+                'spoc_name' => 'nullable|string|max:255',
+                'spoc_phone' => 'nullable|string|max:20',
+                'item_commodity_description' => 'nullable|string',
+            ]);
+        } else {
+            // Regular claims validation
+            $validationRules = array_merge($validationRules, [
+                'insured_name' => 'nullable|string|max:255',
+                'policy_type' => 'nullable|string|max:255',
+                'brief_description_of_loss' => 'nullable|string',
+                'details_of_affected_items' => 'nullable|string',
+                'complete_loss_location' => 'nullable|string',
+                'contact_person_name' => 'nullable|string|max:255',
+                'contact_person_phone' => 'nullable|string|max:20',
+                'contact_person_email' => 'nullable|email|max:255',
+            ]);
+        }
+
+        $request->validate($validationRules);
+
+        $claimData = $request->all();
+        $claimData['company_id'] = $user->company_id;
+
+        Claims::create($claimData);
+
+        return redirect()->route('user.claims')->with('success', 'Claim submitted successfully!');
     }
 
     public function ajaxBulkRow(Request $request, $companyId)
@@ -92,15 +200,16 @@ class PortfolioController extends Controller
         $request->validate([
             'document' => 'required',
             'document.*' => 'file|mimes:pdf,jpg,jpeg,png',
-            'remark' => 'nullable|string|max:255',
         ]);
         if ($request->hasFile('document')) {
             foreach ($request->file('document') as $file) {
                 $path = $file->store('endorsement_copies', 'public');
+                // Store original filename in remark column
+                $originalFilename = $file->getClientOriginalName();
                 EndorsementCopy::create([
                     'policy_portfolio_id' => $policyId,
                     'document' => $path,
-                    'remark' => $request->remark,
+                    'remark' => $originalFilename,
                 ]);
             }
         }

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -21,4 +22,9 @@ class PolicyPortfolio extends Model
         'cash_deposit',
         'policy_copy',
     ];
+
+    public function company()
+    {
+        return $this->belongsTo(CompanyMaster::class, 'company_id');
+    }
 }

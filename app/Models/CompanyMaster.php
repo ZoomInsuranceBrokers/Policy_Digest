@@ -9,6 +9,13 @@ class CompanyMaster extends Model
 {
     use HasFactory;
 
+    // Relationship: Company has many claims
+    public function claims()
+    {
+        return $this->hasMany(\App\Models\Claims::class, 'company_id');
+    }
+    use HasFactory;
+
     protected $table = 'company_master';
 
     protected $fillable = [
