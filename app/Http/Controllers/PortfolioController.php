@@ -135,16 +135,22 @@ class PortfolioController extends Controller
     public function ajaxBulkRow(Request $request, $companyId)
     {
         $data = $request->all();
-        // Convert date fields to YYYY-MM-DD if needed
+        // Convert date fields to YYYY-MM-DD if needed (dd/mm/yyyy, dd-mm-yyyy, yyyy-mm-dd)
         foreach (['Start Date', 'Expiry Date'] as $dateField) {
             if (!empty($data[$dateField])) {
-                $date = $data[$dateField];
-                if (preg_match('/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/', $date, $m)) {
-                    $data[$dateField] = $m[3] . '-' . str_pad($m[1], 2, '0', STR_PAD_LEFT) . '-' . str_pad($m[2], 2, '0', STR_PAD_LEFT);
+                $dateStr = $data[$dateField];
+                $formats = ['d-m-Y', 'd/m/Y', 'Y-m-d'];
+                foreach ($formats as $fmt) {
+                    $dt = \DateTime::createFromFormat($fmt, $dateStr);
+                    if ($dt) {
+                        $data[$dateField] = $dt->format('Y-m-d');
+                        break;
+                    }
                 }
             }
         }
         $validator = \Validator::make($data, [
+            'Insured Name' => 'required|string|max:255',
             'Product Name' => 'required|string|max:255',
             'Policy Number' => 'required|string|max:255',
             'Start Date' => 'required|date',
@@ -164,6 +170,7 @@ class PortfolioController extends Controller
         try {
             PolicyPortfolio::create([
                 'company_id' => $companyId,
+                'insured_name' => $data['Insured Name'],
                 'product_name' => $data['Product Name'],
                 'policy_number' => $data['Policy Number'],
                 'start_date' => $data['Start Date'],
@@ -245,6 +252,7 @@ class PortfolioController extends Controller
     public function storeSinglePolicy(Request $request, $companyId)
     {
         $request->validate([
+            'insured_name' => 'required|string|max:255',
             'product_name' => 'required|string|max:255',
             'policy_number' => 'required|string|max:255',
             'start_date' => 'required|date',
@@ -262,6 +270,7 @@ class PortfolioController extends Controller
 
         $policy = PolicyPortfolio::create([
             'company_id' => $companyId,
+            'insured_name' => $request->insured_name,
             'product_name' => $request->product_name,
             'policy_number' => $request->policy_number,
             'start_date' => $request->start_date,
@@ -298,11 +307,13 @@ class PortfolioController extends Controller
 
     public function bulkUpload(Request $request, $companyId)
     {
+        dd($request->all());
         $request->validate([
             'bulk_csv' => 'required|file|mimes:csv,txt',
         ]);
 
         $requiredColumns = [
+            'Insured Name',
             'Product Name',
             'Policy Number',
             'Start Date',
@@ -332,9 +343,24 @@ class PortfolioController extends Controller
         while (($row = fgetcsv($handle)) !== false) {
             $rowNum++;
             $data = array_combine($header, $row);
+            // Convert date fields to yyyy-mm-dd using DateTime for all common formats
+            foreach (['Start Date', 'Expiry Date'] as $dateField) {
+                if (!empty($data[$dateField])) {
+                    $dateStr = $data[$dateField];
+                    $formats = ['d/m/Y', 'd-m-Y', 'Y-m-d'];
+                    foreach ($formats as $fmt) {
+                        $dt = \DateTime::createFromFormat($fmt, $dateStr);
+                        if ($dt && $dt->format($fmt) === $dateStr) {
+                            $data[$dateField] = $dt->format('Y-m-d');
+                            break;
+                        }
+                    }
+                }
+            }
             $rowResult = ['row' => $rowNum, 'data' => $data, 'status' => '', 'error' => ''];
             // Validate each field
             $validator = \Validator::make($data, [
+                'Insured Name' => 'required|string|max:255',
                 'Product Name' => 'required|string|max:255',
                 'Policy Number' => 'required|string|max:255',
                 'Start Date' => 'required|date',
@@ -352,6 +378,7 @@ class PortfolioController extends Controller
                 try {
                     PolicyPortfolio::create([
                         'company_id' => $companyId,
+                        'insured_name' => $data['Insured Name'],
                         'product_name' => $data['Product Name'],
                         'policy_number' => $data['Policy Number'],
                         'start_date' => $data['Start Date'],

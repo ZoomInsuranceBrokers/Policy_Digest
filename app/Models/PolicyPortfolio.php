@@ -11,6 +11,7 @@ class PolicyPortfolio extends Model
     protected $table = 'policy_portfolio';
     protected $fillable = [
         'company_id',
+        'insured_name',
         'product_name',
         'policy_number',
         'start_date',

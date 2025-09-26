@@ -1,13 +1,16 @@
 <?php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
-    public function up(): void {
+    public function up(): void
+    {
         Schema::create('policy_portfolio', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('company_id');
+            $table->string('insured_name')->nullable();
             $table->string('product_name');
             $table->string('policy_number');
             $table->date('start_date');
@@ -21,7 +24,8 @@ return new class extends Migration {
             $table->timestamps();
         });
     }
-    public function down(): void {
+    public function down(): void
+    {
         Schema::dropIfExists('policy_portfolio');
     }
 };

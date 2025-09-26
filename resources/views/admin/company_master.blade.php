@@ -14,48 +14,50 @@
         Create company records to manage your organizations.
     </div>
     <div class="overflow-x-auto">
-        <table id="companyTable" class="min-w-full bg-white rounded shadow">
+        <table id="companyTable" class="min-w-full rounded-xl shadow-lg">
             <thead>
-                <tr class="bg-gray-100 text-gray-700">
-                    <th class="px-4 py-2 text-left">Actions</th>
-                    <th class="px-4 py-2 text-left">Active</th>
-                    <th class="px-4 py-2 text-left">Name</th>
-                    <th class="px-4 py-2 text-left">Code</th>
+                <tr class="bg-indigo-500 text-white align-middle">
+                    <th class="px-6 py-4 text-left font-semibold align-middle">Active</th>
+                    <th class="px-6 py-4 text-left font-semibold align-middle">Name</th>
+                    <th class="px-6 py-4 text-right font-semibold align-middle">Actions</th>
                 </tr>
             </thead>
             <tbody id="companyTableBody">
                 @foreach($companies as $company)
-                <tr class="border-b">
-                    <td class="px-4 py-2 flex gap-2">
-                        <button class="editCompanyBtn text-indigo-600 hover:bg-indigo-100 p-2 rounded" data-id="{{ $company->id }}" title="Edit">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="17" width="18" height="4" rx="2"/><path d="M12 17V3m0 0l4 4m-4-4l-4 4"/></svg>
-                        </button>
-                        <form method="POST" action="{{ route('admin.company_master.delete', $company->id) }}" onsubmit="return confirm('Are you sure you want to delete this company?');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="text-red-600 hover:bg-red-100 p-2 rounded" title="Delete">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#DC2626" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2m2 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14z"/></svg>
+                <tr class="even:bg-indigo-50 hover:bg-indigo-100 transition align-middle">
+                    <td class="px-6 py-4 align-middle">
+                            <form method="POST" action="{{ route('admin.company_master.toggle', $company->id) }}">
+                                @csrf
+                                <button type="submit" class="focus:outline-none">
+                                    <span class="relative inline-block w-10 align-middle select-none transition duration-200 ease-in" style="top:0;">
+                                        <span class="absolute left-0 top-0 w-10 h-6 rounded-full transition bg-gray-300 {{ $company->is_active ? 'bg-indigo-500' : '' }}"></span>
+                                        <span class="absolute left-0 top-0 w-6 h-6 bg-white border rounded-full shadow transform transition {{ $company->is_active ? 'translate-x-4 border-indigo-500' : 'border-gray-300' }}"></span>
+                                    </span>
+                                </button>
+                            </form>
+                    </td>
+                    <td class="px-6 py-4 align-middle">
+                        <div class="flex items-center gap-4 h-full align-middle">
+                            @if($company->logo)
+                                <img src="{{ asset('storage/' . $company->logo) }}" alt="Logo" class="h-8 w-8 rounded object-cover border" />
+                            @endif
+                            <span class="font-medium text-gray-800 text-base">{{ $company->comp_name }}</span>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 align-middle">
+                        <div class="flex items-center justify-start gap-2 h-full align-middle">
+                            <button class="editCompanyBtn text-indigo-600 hover:bg-indigo-100 p-2 rounded" data-id="{{ $company->id }}" title="Edit">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="17" width="18" height="4" rx="2"/><path d="M12 17V3m0 0l4 4m-4-4l-4 4"/></svg>
                             </button>
-                        </form>
+                            <form method="POST" action="{{ route('admin.company_master.delete', $company->id) }}" onsubmit="return confirm('Are you sure you want to delete this company?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="text-red-600 hover:bg-red-100 p-2 rounded" title="Delete">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#DC2626" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2m2 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14z"/></svg>
+                                </button>
+                            </form>
+                        </div>
                     </td>
-                    <td class="px-4 py-2 align-middle">
-                        <form method="POST" action="{{ route('admin.company_master.toggle', $company->id) }}" class="flex items-center justify-center">
-                            @csrf
-                            <button type="submit" class="focus:outline-none">
-                                <span class="relative inline-block w-10 align-middle select-none transition duration-200 ease-in" style="top:0;">
-                                    <span class="absolute left-0 top-0 w-10 h-6 rounded-full transition bg-gray-300 {{ $company->is_active ? 'bg-indigo-500' : '' }}"></span>
-                                    <span class="absolute left-0 top-0 w-6 h-6 bg-white border rounded-full shadow transform transition {{ $company->is_active ? 'translate-x-4 border-indigo-500' : 'border-gray-300' }}"></span>
-                                </span>
-                            </button>
-                        </form>
-                    </td>
-                    <td class="px-4 py-2 flex items-center gap-2">
-                        @if($company->logo)
-                            <img src="{{ asset('storage/' . $company->logo) }}" alt="Logo" class="h-7 w-7 rounded object-cover border" />
-                        @endif
-                        {{ $company->comp_name }}
-                    </td>
-                    <td class="px-4 py-2">{{ $company->id }}</td>
                 </tr>
                 @endforeach
             </tbody>
@@ -70,16 +72,16 @@
                 @csrf
                 <input type="hidden" name="id" id="companyId">
                 <div class="mb-4">
-                    <label class="block text-left mb-1 font-semibold">Name</label>
+                    <label class="block text-left mb-1 font-semibold">Name <span class="text-red-600">*</span></label>
                     <input type="text" name="comp_name" id="compName" class="w-full border px-3 py-2 rounded" required>
                 </div>
                 <div class="mb-4">
                     <label class="block text-left mb-1 font-semibold">Address</label>
-                    <input type="text" name="address" id="address" class="w-full border px-3 py-2 rounded" required>
+                    <input type="text" name="address" id="address" class="w-full border px-3 py-2 rounded">
                 </div>
                 <div class="mb-4">
                     <label class="block text-left mb-1 font-semibold">Pincode</label>
-                    <input type="text" name="pincode" id="pincode" class="w-full border px-3 py-2 rounded" required>
+                    <input type="text" name="pincode" id="pincode" class="w-full border px-3 py-2 rounded">
                 </div>
                 <div class="mb-4">
                     <label class="block text-left mb-1 font-semibold">Logo</label>

@@ -17,9 +17,9 @@ class CompanyMasterController extends Controller
     {
         $validated = $request->validate([
             'comp_name' => 'required|string|max:255',
-            'address' => 'required|string',
-            'pincode' => 'required|string|max:20',
-            'logo' => 'required|file|mimes:jpg,jpeg,png,gif|max:2048',
+            'address' => 'nullable|string',
+            'pincode' => 'nullable|string|max:20',
+            'logo' => 'nullable|file|mimes:jpg,jpeg,png,gif|max:2048',
         ]);
         $validated['is_delete'] = 0;
         if ($request->hasFile('logo')) {
@@ -34,8 +34,8 @@ class CompanyMasterController extends Controller
     {
         $validated = $request->validate([
             'comp_name' => 'required|string|max:255',
-            'address' => 'required|string',
-            'pincode' => 'required|string|max:20',
+            'address' => 'nullable|string',
+            'pincode' => 'nullable|string|max:20',
             'logo' => 'nullable|file|mimes:jpg,jpeg,png,gif|max:2048',
         ]);
         $company = CompanyMaster::findOrFail($id);

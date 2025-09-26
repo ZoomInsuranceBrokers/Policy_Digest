@@ -9,6 +9,11 @@
     </div>
     <div id="singleEntryForm">
         <form action="{{ route('admin.portfolio.store_policy', $company->id) }}" method="POST" enctype="multipart/form-data" class="w-[600px] mx-auto bg-gradient-to-br from-white via-gray-100 to-white rounded-xl shadow-2xl p-8 border border-gray-200 relative" style="box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37); backdrop-filter: blur(4px);">
+            <div class="mb-6">
+                <label class="block font-semibold mb-1">Insured Name <span class="text-red-500">*</span></label>
+                <input type="text" name="insured_name" value="{{ old('insured_name') }}" class="w-full border border-indigo-200 rounded px-4 py-2 focus:ring-2 focus:ring-indigo-400 shadow-inner" required>
+                @error('insured_name') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+            </div>
             @csrf
             <div class="absolute inset-0 rounded-xl pointer-events-none" style="box-shadow: 0 4px 60px 0 rgba(80, 80, 255, 0.12) inset, 0 1.5px 0 0 #fff; opacity: 0.7;"></div>
             <div class="mb-6 flex gap-6">

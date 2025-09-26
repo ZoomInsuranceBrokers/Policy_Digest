@@ -19,10 +19,7 @@
                 <tbody>
                     @foreach($companies as $company)
                     <tr class="border-b">
-                        <td class="px-4 py-2 flex items-center gap-2">
-                            @if($company->logo)
-                                <img src="{{ asset('storage/' . $company->logo) }}" alt="Logo" class="h-7 w-7 rounded object-cover border" />
-                            @endif
+                        <td class="px-4 py-2  gap-2">
                             {{ $company->comp_name }}
                         </td>
                         <td class="px-4 py-2 flex gap-2">

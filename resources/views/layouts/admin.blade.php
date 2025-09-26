@@ -46,9 +46,7 @@
                     </form>
                 </nav>
             </div>
-            <div class="p-6">
-                <button class="w-full bg-indigo-100 text-indigo-700 py-2 rounded-lg font-semibold hover:bg-indigo-200 transition">Get File Manager</button>
-            </div>
+
         </aside>
         <!-- Main Content -->
         <div class="flex-1 flex flex-col">

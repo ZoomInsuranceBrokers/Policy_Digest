@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('company_master', function (Blueprint $table) {
             $table->id();
             $table->string('comp_name');
-            $table->string('address');
-            $table->string('pincode');
+            $table->string('address')->nullable();
+            $table->string('pincode')->nullable();
             $table->string('logo')->nullable();
             $table->boolean('is_active')->default(true);
             $table->boolean('is_delete')->default(false);
