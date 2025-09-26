@@ -6,8 +6,24 @@ use App\Models\CompanyMaster;
 use App\Models\PolicyPortfolio;
 use Illuminate\Http\Request;
 use App\Models\EndorsementCopy;
+
 class PortfolioController extends Controller
 {
+
+    public function userPortfolio()
+    {
+        $user = auth()->user();
+        $companyId = $user->company_id;
+
+        $policies = [];
+        $endorsements = [];
+        if ($companyId) {
+            $policies = PolicyPortfolio::where('company_id', $companyId)->get();
+            $endorsements = EndorsementCopy::whereIn('policy_portfolio_id', $policies->pluck('id'))->get();
+        }
+        return view('user.portfolio', compact('policies', 'endorsements'));
+    }
+
     public function ajaxBulkRow(Request $request, $companyId)
     {
         $data = $request->all();
@@ -178,8 +194,15 @@ class PortfolioController extends Controller
         ]);
 
         $requiredColumns = [
-            'Product Name', 'Policy Number', 'Start Date', 'Expiry Date', 'Sum Insured',
-            'PBST', 'Gross Premium', 'Insurance Company Name', 'Cash Deposit'
+            'Product Name',
+            'Policy Number',
+            'Start Date',
+            'Expiry Date',
+            'Sum Insured',
+            'PBST',
+            'Gross Premium',
+            'Insurance Company Name',
+            'Cash Deposit'
         ];
         $company = CompanyMaster::findOrFail($companyId);
         $file = $request->file('bulk_csv');

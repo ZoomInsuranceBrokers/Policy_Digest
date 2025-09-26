@@ -3,13 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>User Panel</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        .sidebar-link.active { background: #f3f4f6; font-weight: 600; }
-    </style>
 </head>
 <body class="bg-gray-100 min-h-screen">
     <div class="flex min-h-screen">
@@ -23,17 +18,14 @@
                     <span class="font-bold text-lg text-indigo-700">Policy Digest</span>
                 </div>
                 <nav class="mt-8">
-                    <a href="{{ route('admin.dashboard') }}" class="sidebar-link flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100{{ request()->routeIs('admin.dashboard') ? ' active' : '' }}">
+                    <a href="{{ route('user.dashboard') }}" class="sidebar-link flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100{{ request()->routeIs('user.dashboard') ? ' active' : '' }}">
                         <span class="material-icons mr-3">dashboard</span> Dashboard
                     </a>
-                    <a href="{{ route('admin.company_master') }}" class="sidebar-link flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100{{ request()->routeIs('admin.company_master') ? ' active' : '' }}">
-                        <span class="material-icons mr-3">business</span> Company Master
-                    </a>
-                    <a href="{{ route('admin.portfolio') }}" class="sidebar-link flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100{{ request()->routeIs('admin.portfolio') ? ' active' : '' }}">
+                    <a href="{{ route('user.portfolio') }}" class="sidebar-link flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100{{ request()->routeIs('user.portfolio') ? ' active' : '' }}">
                         <span class="material-icons mr-3">account_balance_wallet</span> Portfolio
                     </a>
-                    <a href="{{ route('admin.users') }}" class="sidebar-link flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100{{ request()->routeIs('admin.users') ? ' active' : '' }}">
-                        <span class="material-icons mr-3">group</span> Users
+                    <a href="{{ route('user.claims') }}" class="sidebar-link flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100{{ request()->routeIs('user.claims') ? ' active' : '' }}">
+                        <span class="material-icons mr-3">assignment</span> Claims
                     </a>
                     <form method="POST" action="{{ route('logout') }}" class="mt-8">
                         @csrf
