@@ -30,7 +30,7 @@
                 <input type="password" name="password" value="{{ old('password') }}" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200" placeholder="Password" required>
             </div>
             <div class="flex justify-end mb-4">
-                <a href="#" class="text-xs text-gray-500 hover:underline">Forgot password?</a>
+                <a href="{{ url('/forgot-password') }}" class="text-xs text-gray-500 hover:underline">Forgot password?</a>
             </div>
             <button type="submit" class="w-full bg-black text-white py-2 rounded-lg font-semibold hover:bg-gray-800 transition">Get Started</button>
         </form>
