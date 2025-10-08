@@ -10,6 +10,7 @@ class PolicyPortfolio extends Model
     use HasFactory;
     protected $table = 'policy_portfolio';
     protected $fillable = [
+        'cd_ac_id',
         'company_id',
         'insured_name',
         'product_name',
@@ -27,5 +28,10 @@ class PolicyPortfolio extends Model
     public function company()
     {
         return $this->belongsTo(CompanyMaster::class, 'company_id');
+    }
+
+    public function cdAccount()
+    {
+        return $this->belongsTo(CdMaster::class, 'cd_ac_id');
     }
 }

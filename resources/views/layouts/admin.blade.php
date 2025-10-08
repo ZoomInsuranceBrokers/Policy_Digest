@@ -6,9 +6,36 @@
     <title>Admin Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.7/css/dataTables.tailwindcss.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
+
     <style>
         body { font-family: 'Inter', sans-serif; }
         .sidebar-link.active { background: #f3f4f6; font-weight: 600; }
+
+        /* DataTables Custom Styling */
+        .dataTables_wrapper .dataTables_length,
+        .dataTables_wrapper .dataTables_filter,
+        .dataTables_wrapper .dataTables_info,
+        .dataTables_wrapper .dataTables_paginate {
+            margin: 1rem 0;
+        }
+
+        .dataTables_wrapper .dataTables_filter input {
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            padding: 0.5rem 1rem;
+            margin-left: 0.5rem;
+        }
+
+        .dataTables_wrapper .dataTables_length select {
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            padding: 0.25rem 0.5rem;
+            margin: 0 0.5rem;
+        }
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen">
@@ -38,6 +65,9 @@
                     </a>
                     <a href="{{ route('admin.users') }}" class="sidebar-link flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100{{ request()->routeIs('admin.users') ? ' active' : '' }}">
                         <span class="material-icons mr-3">group</span> Users
+                    </a>
+                    <a href="{{ route('admin.cd_account') }}" class="sidebar-link flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100{{ request()->routeIs('admin.cd_account') ? ' active' : '' }}">
+                        <span class="material-icons mr-3">account_balance</span> CD Account
                     </a>
                     <form method="POST" action="{{ route('logout') }}" class="mt-8">
                         @csrf
@@ -78,7 +108,16 @@
             </main>
         </div>
     </div>
+
     <!-- Material Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <!-- jQuery and DataTables JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.13.7/js/dataTables.tailwindcss.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+
+    @stack('scripts')
 </body>
 </html>

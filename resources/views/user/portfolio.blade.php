@@ -21,6 +21,7 @@
                         <th class="px-4 py-2">Gross Premium</th>
                         <th class="px-4 py-2">Insurance Company</th>
                         <th class="px-4 py-2">Cash Deposit</th>
+                        <th class="px-4 py-2">CD Account</th>
                         <th class="px-4 py-2">Policy Copy</th>
                         <th class="px-4 py-2">Endorsements</th>
                     </tr>
@@ -37,6 +38,15 @@
                         <td class="px-4 py-2">₹{{ number_format($policy->gross_premium, 2) }}</td>
                         <td class="px-4 py-2">{{ $policy->insurance_company_name }}</td>
                         <td class="px-4 py-2">{{ $policy->cash_deposit ?? 'N/A' }}</td>
+                        <td class="px-4 py-2">
+                            @if($policy->cdAccount)
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                    {{ $policy->cdAccount->ac_name }}
+                                </span>
+                            @else
+                                <span class="text-gray-400">Not Assigned</span>
+                            @endif
+                        </td>
                         <td class="px-4 py-2">
                             @if($policy->policy_copy)
                                 <a href="{{ asset('storage/' . $policy->policy_copy) }}" class="text-blue-600 underline" target="_blank">View Document</a>

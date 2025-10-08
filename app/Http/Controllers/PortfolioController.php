@@ -7,6 +7,8 @@ use App\Models\PolicyPortfolio;
 use Illuminate\Http\Request;
 use App\Models\EndorsementCopy;
 use App\Models\Claims;
+use App\Models\CdMaster;
+use App\Models\CdAccTransaction;
 
 class PortfolioController extends Controller
 {
@@ -19,7 +21,9 @@ class PortfolioController extends Controller
         $policies = [];
         $endorsements = [];
         if ($companyId) {
-            $policies = PolicyPortfolio::where('company_id', $companyId)->get();
+            $policies = PolicyPortfolio::where('company_id', $companyId)
+                                     ->with('cdAccount')
+                                     ->get();
             $endorsements = EndorsementCopy::whereIn('policy_portfolio_id', $policies->pluck('id'))->get();
         }
         return view('user.portfolio', compact('policies', 'endorsements'));
@@ -295,7 +299,7 @@ class PortfolioController extends Controller
     public function showPolicies($companyId)
     {
         $company = CompanyMaster::findOrFail($companyId);
-        $policies = PolicyPortfolio::where('company_id', $companyId)->get();
+        $policies = PolicyPortfolio::with('cdAccount')->where('company_id', $companyId)->get();
         return view('admin.policies', compact('company', 'policies'));
     }
 
@@ -423,5 +427,56 @@ class PortfolioController extends Controller
             ]);
         }
         return redirect()->route('admin.portfolio.policies', $companyId)->with('success', 'Bulk upload complete.');
+    }
+
+    /**
+     * Assign CD Account to a policy
+     */
+    public function assignCdAccount(Request $request, $policyId)
+    {
+        $request->validate([
+            'cd_ac_id' => 'required|exists:cd_master,id'
+        ]);
+
+        $policy = PolicyPortfolio::findOrFail($policyId);
+        $policy->cd_ac_id = $request->cd_ac_id;
+        $policy->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'CD Account assigned successfully!'
+        ]);
+    }
+
+    public function userCdAccounts()
+    {
+        $user = auth()->user();
+        $companyId = $user->company_id;
+
+        $cdAccounts = [];
+        if ($companyId) {
+            $cdAccounts = CdMaster::where('comp_id', $companyId)
+                                 ->orderBy('created_at', 'desc')
+                                 ->get();
+        }
+
+        return view('user.cd_accounts', compact('cdAccounts'));
+    }
+
+    public function userCdAccountTransactions($cdAccountId)
+    {
+        $user = auth()->user();
+        $companyId = $user->company_id;
+
+        // Verify the CD account belongs to the user's company
+        $cdAccount = CdMaster::where('id', $cdAccountId)
+                            ->where('comp_id', $companyId)
+                            ->firstOrFail();
+
+        $transactions = CdAccTransaction::where('cd_ac_id', $cdAccountId)
+                                      ->orderBy('created_at', 'desc')
+                                      ->get();
+
+        return view('user.cd_account_transactions', compact('cdAccount', 'transactions'));
     }
 }

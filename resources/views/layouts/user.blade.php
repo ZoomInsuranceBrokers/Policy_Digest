@@ -25,6 +25,9 @@
                     <a href="{{ route('user.portfolio') }}" class="sidebar-link flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100{{ request()->routeIs('user.portfolio') ? ' active' : '' }}">
                         <span class="material-icons mr-3">account_balance_wallet</span> Portfolio
                     </a>
+                    <a href="{{ route('user.cd_accounts') }}" class="sidebar-link flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100{{ request()->routeIs('user.cd_accounts*') ? ' active' : '' }}">
+                        <span class="material-icons mr-3">account_balance</span> CD Accounts
+                    </a>
                     <a href="{{ route('user.claims') }}" class="sidebar-link flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100{{ request()->routeIs('user.claims') ? ' active' : '' }}">
                         <span class="material-icons mr-3">assignment</span> Claims
                     </a>

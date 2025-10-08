@@ -47,12 +47,36 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin//users', [App\Http\Controllers\UserController::class, 'store'])->name('admin.users.store');
     Route::put('/admin//users/{id}', [App\Http\Controllers\UserController::class, 'update'])->name('admin.users.update');
     Route::delete('/admin//users/{id}', [App\Http\Controllers\UserController::class, 'destroy'])->name('admin.users.destroy');
+
+    // CD Account Routes
+    Route::get('/admin/cd-account', [\App\Http\Controllers\Admin\CdAccountController::class, 'index'])->name('admin.cd_account');
+    Route::get('/admin/cd-account/create', [\App\Http\Controllers\Admin\CdAccountController::class, 'create'])->name('admin.cd_account.create');
+    Route::post('/admin/cd-account', [\App\Http\Controllers\Admin\CdAccountController::class, 'store'])->name('admin.cd_account.store');
+    Route::get('/admin/cd-account/{id}/edit', [\App\Http\Controllers\Admin\CdAccountController::class, 'edit'])->name('admin.cd_account.edit');
+    Route::put('/admin/cd-account/{id}', [\App\Http\Controllers\Admin\CdAccountController::class, 'update'])->name('admin.cd_account.update');
+    Route::delete('/admin/cd-account/{id}', [\App\Http\Controllers\Admin\CdAccountController::class, 'destroy'])->name('admin.cd_account.destroy');
+
+    // CD Account Transaction Routes
+    Route::get('/admin/cd-account/{cdAccountId}/transactions', [\App\Http\Controllers\Admin\CdTransactionController::class, 'index'])->name('admin.cd_account.transactions');
+    Route::get('/admin/cd-account/{cdAccountId}/transactions/create', [\App\Http\Controllers\Admin\CdTransactionController::class, 'create'])->name('admin.cd_account.transactions.create');
+    Route::post('/admin/cd-account/{cdAccountId}/transactions', [\App\Http\Controllers\Admin\CdTransactionController::class, 'store'])->name('admin.cd_account.transactions.store');
+    Route::get('/admin/cd-account/{cdAccountId}/transactions/{id}/edit', [\App\Http\Controllers\Admin\CdTransactionController::class, 'edit'])->name('admin.cd_account.transactions.edit');
+    Route::put('/admin/cd-account/{cdAccountId}/transactions/{id}', [\App\Http\Controllers\Admin\CdTransactionController::class, 'update'])->name('admin.cd_account.transactions.update');
+    Route::delete('/admin/cd-account/{cdAccountId}/transactions/{id}', [\App\Http\Controllers\Admin\CdTransactionController::class, 'destroy'])->name('admin.cd_account.transactions.destroy');
+
+    // Policy CD Account Assignment Routes
+    Route::get('/admin/cd-account/by-company/{companyId}', [\App\Http\Controllers\Admin\CdAccountController::class, 'getByCompany'])->name('admin.cd_account.by_company');
+    Route::put('/admin/portfolio/assign-cd-account/{policyId}', [\App\Http\Controllers\PortfolioController::class, 'assignCdAccount'])->name('admin.portfolio.assign_cd_account');
 });
 
 Route::middleware(['auth', 'user'])->prefix('user')->group(function () {
-    Route::get('/dashboard', function() { return view('user.dashboard'); })->name('user.dashboard');
+    Route::get('/dashboard', function () {
+        return view('user.dashboard');
+    })->name('user.dashboard');
     Route::get('/portfolio', [PortfolioController::class, 'userPortfolio'])->name('user.portfolio');
     Route::get('/portfolio/policy/{policyId}/endorsements', [PortfolioController::class, 'userViewEndorsements'])->name('user.portfolio.endorsements');
+    Route::get('/cd-accounts', [PortfolioController::class, 'userCdAccounts'])->name('user.cd_accounts');
+    Route::get('/cd-accounts/{cdAccountId}/transactions', [PortfolioController::class, 'userCdAccountTransactions'])->name('user.cd_accounts.transactions');
     Route::get('/claims', [PortfolioController::class, 'userClaims'])->name('user.claims');
     Route::get('/claims/create/{type?}', [PortfolioController::class, 'createClaim'])->name('user.claims.create');
     Route::post('/claims/store', [PortfolioController::class, 'storeClaim'])->name('user.claims.store');
