@@ -41,7 +41,7 @@
                         <td class="px-4 py-2">
                             @if($policy->cdAccount)
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                    {{ $policy->cdAccount->ac_name }}
+                                    {{ $policy->cdAccount->cd_ac_name }}
                                 </span>
                             @else
                                 <span class="text-gray-400">Not Assigned</span>
